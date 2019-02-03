@@ -7,7 +7,7 @@ def scanImage(Map config) {
 
   // DSSC config
   def smartcheckConfig = [
-      host: "18.223.88.2"  // Config with SC address
+      host: ""  // Config with SC address
   ]
   withCredentials([
       usernamePassword(credentialsId: 'smart-check-jenkins-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD') // Add creds in Jenkins cred manager
@@ -160,7 +160,7 @@ def scanImage(Map config) {
 pipeline {
   environment {
     registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
-    repository = "portfolio"
+    repository = "sc-test"
     registryCredential = 'ecr:us-east-2:ecr'
     dockerImage = ""
 
@@ -170,13 +170,13 @@ pipeline {
   stages {
     stage("Cloning Git Repo") {
       steps {
-        git "https://github.com/robmaynardjr/Portfolio.git"
+        git "https://github.com/robmaynardjr/SC-Test.git"
       }
     }
     stage("Building image") {
       steps{
         script {
-          dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/portfolio:latest')
+          dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
         }
       }
     }
