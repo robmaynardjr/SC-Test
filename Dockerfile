@@ -1,6 +1,6 @@
 FROM node
 
-WORKDIR /portfolio
+WORKDIR /SC-test
 COPY package.json ./
 
 RUN npm install
