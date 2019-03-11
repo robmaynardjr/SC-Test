@@ -42,6 +42,7 @@ def scanImage(Map config) {
    // Request a scan
   def hook = registerWebhook()
   echo "Requesting scan for ${config.registry}/${config.repository}:${config.tag} ..."
+  echo hook.getURL()
 
   String scanRequestBody = """
       {
