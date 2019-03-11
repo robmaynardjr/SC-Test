@@ -63,10 +63,9 @@ def scanImage(Map config) {
         "webhooks": [
           {
             "hookURL": "${hook.getURL()}",
-            "secret": "string (password)",
             "insecureSkipVerify": true,
             "active": true,
-            "events": ["*"]
+            "events": ["scan-completed"]
           }
         ]
       }
