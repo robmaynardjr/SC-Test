@@ -66,7 +66,7 @@ def scanImage(Map config) {
             "secret": "string (password)",
             "insecureSkipVerify": true,
             "active": true,
-            "events": ["scan-completed", "completed-with-findings"]
+            "events": ["*"]
           }
         ]
       }
