@@ -176,7 +176,7 @@ def scanImage(Map config) {
   def repository = "sc-test"
   def registryCredential = 'ecr:us-east-2:ecr'
   def dockerImage = ""
-  def podLabel = "jenkins-jenkins-slave"
+  def podLabel = "jenkins-jenkins-slave "
 
 
   node(podLabel) {
