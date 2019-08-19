@@ -176,9 +176,10 @@ def scanImage(Map config) {
   def repository = "sc-test"
   def registryCredential = 'ecr:us-east-2:ecr'
   def dockerImage = ""
+  def podLabel = "jenkins-jenkins-slave"
 
 
-  node('jenkins=slave') {
+  node(podLabel) {
     stage('Cloning Git Repo') {
       git "https://github.com/robmaynardjr/SC-Test.git"
     }
