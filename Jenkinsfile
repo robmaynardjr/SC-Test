@@ -224,4 +224,4 @@ def scanImage(Map config) {
       sh 'echo "Deployed to Cluster."'
     }
   }
-// }
+}
