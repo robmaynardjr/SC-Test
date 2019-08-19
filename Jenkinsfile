@@ -167,7 +167,7 @@ pipeline {
 
     
   }
-  agent kubernetes
+  node('jenkins-jenkins-slave')
   stages {
     stage("Cloning Git Repo") {
       steps {
