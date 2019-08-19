@@ -161,24 +161,15 @@ def scanImage(Map config) {
  * This pipeline will run a Docker image build
  */
 
-podTemplate(yaml: """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: docker
-    image: docker:1.11
-    command: ['cat']
-    tty: true
-    volumeMounts:
-    - name: dockersock
-      mountPath: /var/run/docker.sock
-  volumes:
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
-"""
-  ) {
+
+podTemplate(label: 'sc_test', containers: [
+    containerTemplate(name: 'docker', image: 'docker', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.0', command: 'cat', ttyEnabled: true),
+    containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:latest', command: 'cat', ttyEnabled: true)
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+  ]) {
 
   def image = "jenkins/jnlp-slave"
   def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
@@ -187,7 +178,7 @@ spec:
   def dockerImage = ""
 
 
-  node(slave) {
+  node('sc_test') {
     stage('Cloning Git Repo') {
       git "https://github.com/robmaynardjr/SC-Test.git"
     }
