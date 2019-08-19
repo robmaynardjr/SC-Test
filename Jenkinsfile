@@ -166,7 +166,7 @@ pipeline {
 
     
   }
-  agent any
+  agent jenkins-jenkins-slaves
   stages {
     stage("Cloning Git Repo") {
       steps {
