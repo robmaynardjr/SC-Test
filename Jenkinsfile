@@ -178,7 +178,7 @@ def scanImage(Map config) {
   def dockerImage = ""
 
 
-  node('sc_test') {
+  node('jenkins=slave') {
     stage('Cloning Git Repo') {
       git "https://github.com/robmaynardjr/SC-Test.git"
     }
