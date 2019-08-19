@@ -200,24 +200,48 @@ def scanImage(Map config) {
     }
     stage('Smart Check Security Scan'){
       script{
-          // Parameters for Smart Check scan function 
-          def config = [
-            registry: registry,
-            repository: repository,
-            tag: "latest"
-          ]
-          // Adds AWS ECR Credentials to config
-          withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding', 
-            credentialsId: 'ecr', 
-            accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-            ]]) {
-              config.registryAccessKey = AWS_ACCESS_KEY_ID
-              config.registrySecret = AWS_SECRET_ACCESS_KEY
-            }
+        withCredentials([
+            usernamePassword([
+            credentialsId: "example-registry-auth",
+            usernameVariable: "REGISTRY_USER",
+            passwordVariable: "REGISTRY_PASSWORD",
+          ])
+        ]){
+        smartcheckScan([
+            imageName: "279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest",
+            smartcheckHost: "10.0.10.100",
+            smartcheckCredentialsId: "smart-check-jenkins-user",
+            imagePullAuth: new groovy.json.JsonBuilder([
+                region: 'us-east-2'
+                accessKeyId: 'AWS_ACCESS_KEY_ID'
+                secretAccessKey: 'AWS_SECRET_ACCESS_KEY'
+                registry: '279773871986'
+                role: 'arn:aws:iam::279773871986:role/ecr-admin'
+                externalID: '1984'
 
-          scanImage(config)
+            ]).toString(),
+          ])
+        }
+
+
+          // Parameters for Smart Check scan function 
+          // def config = [
+          //   registry: registry,
+          //   repository: repository,
+          //   tag: "latest"
+          // ]
+          // // Adds AWS ECR Credentials to config
+          // withCredentials([[
+          //   $class: 'AmazonWebServicesCredentialsBinding', 
+          //   credentialsId: 'ecr', 
+          //   accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+          //   secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+          //   ]]) {
+          //     config.registryAccessKey = AWS_ACCESS_KEY_ID
+          //     config.registrySecret = AWS_SECRET_ACCESS_KEY
+          //   }
+
+          // scanImage(config)
         }  
       }
     stage('Deploy'){
