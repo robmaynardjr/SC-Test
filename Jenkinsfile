@@ -185,12 +185,17 @@ def scanImage(Map config) {
     }
     stage('Build Container Image'){
       container('docker') {
-        sh "docker build -t '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest' ."
+        script {
+          dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
+        }
       }
     }
     stage('Stage Container Image'){
       container('docker') {
-        sh "docker push 279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest"
+        script {
+          docker.withRegistry((registry + "/" + repository), registryCredential ) {
+            dockerImage.push()
+          }
       }
     }
     stage('Smart Check Security Scan'){
