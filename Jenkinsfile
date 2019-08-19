@@ -221,9 +221,10 @@ spec:
             }
 
           scanImage(config)
+        }  
+      }
+    stage('Deploy'){
+      sh 'echo "Deployed to Cluster."'
     }
-  }
-  stage('Deploy'){
-    sh 'echo "Deployed to Cluster."'
   }
 }
