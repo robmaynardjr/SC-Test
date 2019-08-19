@@ -212,12 +212,12 @@ def scanImage(Map config) {
             smartcheckHost: "10.0.10.100",
             smartcheckCredentialsId: "smart-check-jenkins-user",
             imagePullAuth: new groovy.json.JsonBuilder([
-                region: 'us-east-2'
-                accessKeyId: 'AWS_ACCESS_KEY_ID'
-                secretAccessKey: 'AWS_SECRET_ACCESS_KEY'
-                registry: '279773871986'
-                role: 'arn:aws:iam::279773871986:role/ecr-admin'
-                externalID: '1984'
+                region: 'us-east-2',
+                accessKeyId: 'AWS_ACCESS_KEY_ID',
+                secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
+                registry: '279773871986',
+                role: 'arn:aws:iam::279773871986:role/ecr-admin',
+                externalID: '1984',
 
             ]).toString(),
           ])
