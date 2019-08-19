@@ -157,69 +157,69 @@ def scanImage(Map config) {
   }
 }
 
-node('jenkins-jenkins-slave') {
-  pipeline {
-    environment {
-      registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
-      repository = "sc-test"
-      registryCredential = 'ecr:us-east-2:ecr'
-      dockerImage = ""
 
-      
+pipeline {
+  environment {
+    registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
+    repository = "sc-test"
+    registryCredential = 'ecr:us-east-2:ecr'
+    dockerImage = ""
+
+    
+  }
+  agent kubernetes
+  stages {
+    stage("Cloning Git Repo") {
+      steps {
+        git "https://github.com/robmaynardjr/SC-Test.git"
+      }
     }
-    agent any
-    stages {
-      stage("Cloning Git Repo") {
-        steps {
-          git "https://github.com/robmaynardjr/SC-Test.git"
+    stage("Building image") {
+      steps{
+        script {
+          dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
         }
       }
-      stage("Building image") {
-        steps{
-          script {
-            dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
+    }
+    stage("Stage Image") {
+      steps{
+        script {
+          docker.withRegistry((registry + "/" + repository), registryCredential ) {
+            dockerImage.push()
           }
         }
       }
-      stage("Stage Image") {
-        steps{
-          script {
-            docker.withRegistry((registry + "/" + repository), registryCredential ) {
-              dockerImage.push()
+    }
+    stage("Smart Check Scan") {
+      steps {
+        script{
+          // Parameters for Smart Check scan function 
+          def config = [
+            registry: registry,
+            repository: repository,
+            tag: "latest"
+          ]
+          // Adds AWS ECR Credentials to config
+          withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding', 
+            credentialsId: 'ecr', 
+            accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+            ]]) {
+              config.registryAccessKey = AWS_ACCESS_KEY_ID
+              config.registrySecret = AWS_SECRET_ACCESS_KEY
             }
-          }
-        }
-      }
-      stage("Smart Check Scan") {
-        steps {
-          script{
-            // Parameters for Smart Check scan function 
-            def config = [
-              registry: registry,
-              repository: repository,
-              tag: "latest"
-            ]
-            // Adds AWS ECR Credentials to config
-            withCredentials([[
-              $class: 'AmazonWebServicesCredentialsBinding', 
-              credentialsId: 'ecr', 
-              accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-              secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-              ]]) {
-                config.registryAccessKey = AWS_ACCESS_KEY_ID
-                config.registrySecret = AWS_SECRET_ACCESS_KEY
-              }
 
-            scanImage(config)
-          }
+          scanImage(config)
         }
       }
-      stage ("Deploy to Cluster") {
-        steps{
-          echo "Function to be added at a later date."
-        }
+    }
+    stage ("Deploy to Cluster") {
+      steps{
+        echo "Function to be added at a later date."
       }
     }
   }
 }
+
 // Change in comments
