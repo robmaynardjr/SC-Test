@@ -184,12 +184,12 @@ def scanImage(Map config) {
       git "https://github.com/robmaynardjr/SC-Test.git"
     }
     stage('Build Container Image'){
-      container('jnlp') {
+      container('docker') {
         sh "docker build -t '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest' ."
       }
     }
     stage('Stage Container Image'){
-      container('jnlp') {
+      container('docker') {
         sh "docker push 279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest"
       }
     }
