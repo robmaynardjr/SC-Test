@@ -187,7 +187,7 @@ spec:
   def dockerImage = ""
 
 
-  node(POD_LABEL) {
+  node(slave) {
     stage('Cloning Git Repo') {
       git "https://github.com/robmaynardjr/SC-Test.git"
     }
