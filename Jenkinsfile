@@ -20,7 +20,7 @@ node(podLabel) {
   stage('Stage Container Image'){
     container('docker') {
       script {
-        docker.withRegistry((registry + "/" + repository), registryCredential ) {
+        docker.withRegistry('https://registry.hub.docker.com', registryCredential ) {
           dockerImage.push()
         }
       }
