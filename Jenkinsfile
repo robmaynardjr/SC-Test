@@ -1,10 +1,10 @@
 def image = "jenkins/jnlp-slave"
-def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
+def registry = "robmaynard"
 def repository = "sc-test"
-def registryCredential = 'ecr:us-east-2:ecr'
+def tag = "latest"
 def dockerImage = ""
 def podLabel = "jenkins-jenkins-slave "
-
+registryCredential = "dockerhub"
 
 node(podLabel) {
   stage('Cloning Git Repo') {
@@ -13,7 +13,7 @@ node(podLabel) {
   stage('Build Container Image'){
     container('docker') {
       script {
-        dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
+        dockerImage = docker.build((registry + "/" + repository + ":" + tag))
       }
     }
   }
@@ -29,23 +29,21 @@ node(podLabel) {
   stage('Scan image with DSSC'){
     container('docker') {
       withCredentials([
-          usernamePassword([
-          credentialsId: 'sc-ecr',
-          usernameVariable: 'ECR_USER',
-          passwordVariable: 'ECR_PASS',
-        ])
-      ]){
-          smartcheckScan([
-              imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
-              smartcheckHost: "10.0.10.100",
-              insecureSkipTLSVerify: true,
-              smartcheckCredentialsId: "smart-check-jenkins-user",
-              imagePullAuth: new groovy.json.JsonBuilder([
-                aws: [
-                  region: "us-east-2",
-                  registry: "279773871986",
-                ]
-              ]).toString(),
+        usernamePassword([
+            credentialsId: "dockerhub",
+            usernameVariable: "USER",
+            passwordVariable: "PASSWORD",
+        ])             
+    ]){            
+        smartcheckScan([
+            imageName: "registry.hub.docker.com/robmaynard/sc-test-vuln:latest",
+            smartcheckHost: "10.0.10.100",
+            insecureSkipTLSVerify: true,
+            smartcheckCredentialsId: "smart-check-jenkins-user",
+            imagePullAuth: new groovy.json.JsonBuilder([
+                username: USER,
+                password: PASSWORD,
+                ]).toString(),
           ])
       }
     }
