@@ -227,22 +227,23 @@ def scanImage(Map config) {
                 ],
               ]).toString(),
               findingsThreshold: new groovy.json.JsonBuilder([
-                malware: 0,
-                vulnerabilities: [
-                    defcon1: 0,
-                    critical: 1000,
-                    high: 1000,
-                ],
-                contents: [
-                    defcon1: 0,
-                    critical: 100,
-                    high: 100,
-                ],
-                checklists: [
-                    defcon1: 0,
-                    critical: 100,
-                    high: 100,
-                ],
+                default:
+                  malware: 0,
+                  vulnerabilities: [
+                      defcon1: 0,
+                      critical: 1000,
+                      high: 1000,
+                  ],
+                  contents: [
+                      defcon1: 0,
+                      critical: 100,
+                      high: 100,
+                  ],
+                  checklists: [
+                      defcon1: 0,
+                      critical: 100,
+                      high: 100,
+                  ],
               ]).toString(),
           ])
         }
