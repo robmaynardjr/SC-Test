@@ -198,36 +198,48 @@ def scanImage(Map config) {
           }
       }
     }
-    stage('Smart Check Security Scan'){
+    stage('Scan image with DSSC'){
       container('docker') {
-        script{
-          withCredentials([[
-              $class: 'AmazonWebServicesCredentialsBinding',
-              credentialsId: "ecr",
-              usernameVariable: 'AWS_ACCESS_KEY_ID',
-              passwordVariable: 'AWS_SECRET_ACCESS_KEY',
-            ],
-              usernamePassword(
-                credentialsId: 'sc-ecr', 
-                passwordVariable: 'ecrPass', 
-                usernameVariable: 'ecrUser',
-                )]) {
-          smartcheckScan([
-              imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
-              smartcheckHost: '10.0.10.100',
-              smartcheckCredentialsId: 'smart-check-jenkins-user',
-              imagePullAuth: new groovy.json.JsonBuilder([
-                aws:[
-                  region: 'us-east-2',
-                  accessKeyId: 'AWS_ACCESS_KEY_ID',
-                  secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
-                  registry: '279773871986',
-                  role: 'arn:aws:iam::279773871986:role/ecr-admin',
-                  externalID: '1984',
-                ],
-              ]).toString(),
-          ])
+        steps{
+            withCredentials([
+                usernamePassword([
+                    credentialsId: "sc-ecr",
+                    usernameVariable: "ECR_CRED_USR",
+                    passwordVariable: "ECR_CRED_PSW",
+                ])
+            ]){
+                smartcheckScan([
+                    imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
+                    smartcheckHost: "10.0.10.100",
+                    insecureSkipTLSVerify: true,
+                    smartcheckCredentialsId: "smart-check-jenkins-user",
+                    imagePullAuth: new groovy.json.JsonBuilder([
+                        username: ECR_CRED_USR,
+                        password: ECR_CRED_PSW,
+                    ]).toString(),
+                    findingsThreshold: new groovy.json.JsonBuilder([
+                        malware: 1,
+                        vulnerabilities: [
+                            defcon1: 1,
+                            critical: 3,
+                            high: 4,
+                        ],
+                        contents: [
+                            defcon1: 3,
+                            critical: 3,
+                            high: 3,
+                        ],
+                        checklists: [
+                            defcon1: 2,
+                            critical: 1,
+                            high: 3,
+                        ],
+                    ]).toString(),
+                ])
+            }
+            
         }
+    }
 
 
           // Parameters for Smart Check scan function 
