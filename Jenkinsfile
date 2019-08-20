@@ -206,7 +206,12 @@ def scanImage(Map config) {
               credentialsId: "ecr",
               usernameVariable: 'AWS_ACCESS_KEY_ID',
               passwordVariable: 'AWS_SECRET_ACCESS_KEY',
-            ]]) {
+            ],
+              usernamePassword(
+                credentialsId: 'sc-ecr', 
+                passwordVariable: 'ecrPass', 
+                usernameVariable: 'ecrUser',
+                )]) {
           smartcheckScan([
               imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
               smartcheckHost: '10.0.10.100',
