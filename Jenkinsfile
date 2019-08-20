@@ -29,11 +29,9 @@ node(podLabel) {
   stage('Scan image with DSSC'){
     container('docker') {
       withCredentials([
-          usernamePassword([
-              credentialsId: "sc-ecr",
-              usernameVariable: "ECR_CRED_USR",
-              passwordVariable: "ECR_CRED_PSW",
-          ])
+        $class: 'AmazonWebServicesCredentialsBinding',
+        accessKeyVariable: 'AWS_ACCESS_KEY',
+        secretKeyVariable: 'AWS_SECRET_KEY'
       ]){
           smartcheckScan([
               imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
@@ -41,9 +39,12 @@ node(podLabel) {
               insecureSkipTLSVerify: true,
               smartcheckCredentialsId: "smart-check-jenkins-user",
               imagePullAuth: new groovy.json.JsonBuilder([
-                        username: ECR_CRED_USR,
-                        password: ECR_CRED_PSW,
-                        ]).toString(),
+                aws: [
+                  region: "us-east-2",
+                  registry: "279773871986",
+                  accessKeyID: 'AWS_ACCESS_KEY',
+                  secretAccessKey: 'AWS_SECRET_KEY'
+                ]
               ]).toString(),
           ])
       }
