@@ -1,10 +1,11 @@
+def podLabel = "jenkins-jenkins-slave "
+
 environment {
   image = "jenkins/jnlp-slave"
   registry = "robmaynard"
   repository = "sc-test"
   tag = "latest"
   dockerImage = ""
-  podLabel = "jenkins-jenkins-slave "
   registryCredential = 'dockerhub'
 }
 
