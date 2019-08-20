@@ -36,7 +36,7 @@ node(podLabel) {
         ])             
     ]){            
         smartcheckScan([
-            imageName: "registry.hub.docker.com/robmaynard/sc-test-vuln:latest",
+            imageName: "registry.hub.docker.com/robmaynard/sc-test:latest",
             smartcheckHost: "10.0.10.100",
             insecureSkipTLSVerify: true,
             smartcheckCredentialsId: "smart-check-jenkins-user",
