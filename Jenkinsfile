@@ -1,7 +1,6 @@
 def image = "jenkins/jnlp-slave"
 def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
 def repository = "sc-test"
-def registryCredential = 'ecr:us-east-2:ecr'
 def dockerImage = ""
 def podLabel = "jenkins-jenkins-slave "
 
