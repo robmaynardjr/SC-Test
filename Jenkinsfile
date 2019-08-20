@@ -1,6 +1,7 @@
 def image = "jenkins/jnlp-slave"
 def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
 def repository = "sc-test"
+def registryCredential = 'ecr:us-east-2:ecr'
 def dockerImage = ""
 def podLabel = "jenkins-jenkins-slave "
 
@@ -28,6 +29,7 @@ node(podLabel) {
   stage('Scan image with DSSC'){
     container('docker') {
       withCredentials([
+        $class: 'AmazonWebServicesCredentialsBinding'
         credentialsId: 'ecr',
         accessKeyVariable: 'AWS_ACCESS_KEY',
         secretKeyVariable: 'AWS_SECRET_KEY'
