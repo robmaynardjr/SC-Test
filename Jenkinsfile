@@ -200,44 +200,41 @@ node(podLabel) {
   }
   stage('Scan image with DSSC'){
     container('docker') {
-      steps{
-          withCredentials([
-              usernamePassword([
-                  credentialsId: "sc-ecr",
-                  usernameVariable: "ECR_CRED_USR",
-                  passwordVariable: "ECR_CRED_PSW",
-              ])
-          ]){
-              smartcheckScan([
-                  imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
-                  smartcheckHost: "10.0.10.100",
-                  insecureSkipTLSVerify: true,
-                  smartcheckCredentialsId: "smart-check-jenkins-user",
-                  imagePullAuth: new groovy.json.JsonBuilder([
-                      username: ECR_CRED_USR,
-                      password: ECR_CRED_PSW,
-                  ]).toString(),
-                  findingsThreshold: new groovy.json.JsonBuilder([
-                      malware: 1,
-                      vulnerabilities: [
-                          defcon1: 1,
-                          critical: 3,
-                          high: 4,
-                      ],
-                      contents: [
-                          defcon1: 3,
-                          critical: 3,
-                          high: 3,
-                      ],
-                      checklists: [
-                          defcon1: 2,
-                          critical: 1,
-                          high: 3,
-                      ],
-                  ]).toString(),
-              ])
-          }
-          
+      withCredentials([
+          usernamePassword([
+              credentialsId: "sc-ecr",
+              usernameVariable: "ECR_CRED_USR",
+              passwordVariable: "ECR_CRED_PSW",
+          ])
+      ]){
+          smartcheckScan([
+              imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
+              smartcheckHost: "10.0.10.100",
+              insecureSkipTLSVerify: true,
+              smartcheckCredentialsId: "smart-check-jenkins-user",
+              imagePullAuth: new groovy.json.JsonBuilder([
+                  username: ECR_CRED_USR,
+                  password: ECR_CRED_PSW,
+              ]).toString(),
+              findingsThreshold: new groovy.json.JsonBuilder([
+                  malware: 1,
+                  vulnerabilities: [
+                      defcon1: 1,
+                      critical: 3,
+                      high: 4,
+                  ],
+                  contents: [
+                      defcon1: 3,
+                      critical: 3,
+                      high: 3,
+                  ],
+                  checklists: [
+                      defcon1: 2,
+                      critical: 1,
+                      high: 3,
+                  ],
+              ]).toString(),
+          ])
       }
   }
 
