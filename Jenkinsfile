@@ -216,22 +216,24 @@ node(podLabel) {
                 username: ECR_CRED_USR,
                 password: ECR_CRED_PSW,
               ]).toString(),
-              findingsThreshold: new groovy.json.JsonBuilder([                
-                malware: 1,
-                vulnerabilities: [
-                    defcon1: 1,
-                    critical: 3,
-                    high: 4,
-                ],
-                contents: [
-                    defcon1: 3,
-                    critical: 3,
-                    high: 3,
-                ],
-                checklists: [
-                    defcon1: 2,
-                    critical: 1,
-                    high: 3,
+              findingsThreshold: new groovy.json.JsonBuilder([
+                [
+                  malware: 1,
+                  vulnerabilities: [
+                      defcon1: 1,
+                      critical: 3,
+                      high: 4,
+                  ],
+                  contents: [
+                      defcon1: 3,
+                      critical: 3,
+                      high: 3,
+                  ],
+                  checklists: [
+                      defcon1: 2,
+                      critical: 1,
+                      high: 3,
+                  ],
                 ],
             ]).toString(),
           ])
