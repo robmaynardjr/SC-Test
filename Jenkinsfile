@@ -1,10 +1,12 @@
-def image = "jenkins/jnlp-slave"
-def registry = "robmaynard"
-def repository = "sc-test"
-def tag = "latest"
-def dockerImage = ""
-def podLabel = "jenkins-jenkins-slave "
-registryCredential = "dockerhub"
+environment {
+  image = "jenkins/jnlp-slave"
+  registry = "robmaynard"
+  repository = "sc-test"
+  tag = "latest"
+  dockerImage = ""
+  podLabel = "jenkins-jenkins-slave "
+  registryCredential = 'dockerhub'
+}
 
 node(podLabel) {
   stage('Cloning Git Repo') {
@@ -20,8 +22,16 @@ node(podLabel) {
   stage('Stage Container Image'){
     container('docker') {
       script {
-        docker.withRegistry('https://registry.hub.docker.com', registryCredential ) {
-          dockerImage.push()
+        withCredentials([
+          usernamePassword([
+              credentialsId: "dockerhub",
+              usernameVariable: "USER",
+              passwordVariable: "PASSWORD",
+          ])             
+      ]){  
+          docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+            dockerImage.push()
+          }
         }
       }
     }
