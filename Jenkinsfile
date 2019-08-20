@@ -171,100 +171,99 @@ def scanImage(Map config) {
 //     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
 //   ]) {
 
-  def image = "jenkins/jnlp-slave"
-  def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
-  def repository = "sc-test"
-  def registryCredential = 'ecr:us-east-2:ecr'
-  def dockerImage = ""
-  def podLabel = "jenkins-jenkins-slave "
+def image = "jenkins/jnlp-slave"
+def registry = "https://279773871986.dkr.ecr.us-east-2.amazonaws.com"
+def repository = "sc-test"
+def registryCredential = 'ecr:us-east-2:ecr'
+def dockerImage = ""
+def podLabel = "jenkins-jenkins-slave "
 
 
-  node(podLabel) {
-    stage('Cloning Git Repo') {
-      git "https://github.com/robmaynardjr/SC-Test.git"
-    }
-    stage('Build Container Image'){
-      container('docker') {
-        script {
-          dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
-        }
+node(podLabel) {
+  stage('Cloning Git Repo') {
+    git "https://github.com/robmaynardjr/SC-Test.git"
+  }
+  stage('Build Container Image'){
+    container('docker') {
+      script {
+        dockerImage = docker.build('279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest')
       }
     }
-    stage('Stage Container Image'){
-      container('docker') {
-        script {
-          docker.withRegistry((registry + "/" + repository), registryCredential ) {
-            dockerImage.push()
+  }
+  stage('Stage Container Image'){
+    container('docker') {
+      script {
+        docker.withRegistry((registry + "/" + repository), registryCredential ) {
+          dockerImage.push()
+        }
+    }
+  }
+  stage('Scan image with DSSC'){
+    container('docker') {
+      steps{
+          withCredentials([
+              usernamePassword([
+                  credentialsId: "sc-ecr",
+                  usernameVariable: "ECR_CRED_USR",
+                  passwordVariable: "ECR_CRED_PSW",
+              ])
+          ]){
+              smartcheckScan([
+                  imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
+                  smartcheckHost: "10.0.10.100",
+                  insecureSkipTLSVerify: true,
+                  smartcheckCredentialsId: "smart-check-jenkins-user",
+                  imagePullAuth: new groovy.json.JsonBuilder([
+                      username: ECR_CRED_USR,
+                      password: ECR_CRED_PSW,
+                  ]).toString(),
+                  findingsThreshold: new groovy.json.JsonBuilder([
+                      malware: 1,
+                      vulnerabilities: [
+                          defcon1: 1,
+                          critical: 3,
+                          high: 4,
+                      ],
+                      contents: [
+                          defcon1: 3,
+                          critical: 3,
+                          high: 3,
+                      ],
+                      checklists: [
+                          defcon1: 2,
+                          critical: 1,
+                          high: 3,
+                      ],
+                  ]).toString(),
+              ])
           }
+          
       }
-    }
-    stage('Scan image with DSSC'){
-      container('docker') {
-        steps{
-            withCredentials([
-                usernamePassword([
-                    credentialsId: "sc-ecr",
-                    usernameVariable: "ECR_CRED_USR",
-                    passwordVariable: "ECR_CRED_PSW",
-                ])
-            ]){
-                smartcheckScan([
-                    imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
-                    smartcheckHost: "10.0.10.100",
-                    insecureSkipTLSVerify: true,
-                    smartcheckCredentialsId: "smart-check-jenkins-user",
-                    imagePullAuth: new groovy.json.JsonBuilder([
-                        username: ECR_CRED_USR,
-                        password: ECR_CRED_PSW,
-                    ]).toString(),
-                    findingsThreshold: new groovy.json.JsonBuilder([
-                        malware: 1,
-                        vulnerabilities: [
-                            defcon1: 1,
-                            critical: 3,
-                            high: 4,
-                        ],
-                        contents: [
-                            defcon1: 3,
-                            critical: 3,
-                            high: 3,
-                        ],
-                        checklists: [
-                            defcon1: 2,
-                            critical: 1,
-                            high: 3,
-                        ],
-                    ]).toString(),
-                ])
-            }
-            
-        }
-    }
+  }
 
 
-          // Parameters for Smart Check scan function 
-          // def config = [
-          //   registry: registry,
-          //   repository: repository,
-          //   tag: "latest"
-          // ]
-          // // Adds AWS ECR Credentials to config
-          // withCredentials([[
-          //   $class: 'AmazonWebServicesCredentialsBinding', 
-          //   credentialsId: 'ecr', 
-          //   accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-          //   secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-          //   ]]) {
-          //     config.registryAccessKey = AWS_ACCESS_KEY_ID
-          //     config.registrySecret = AWS_SECRET_ACCESS_KEY
-          //   }
+        // Parameters for Smart Check scan function 
+        // def config = [
+        //   registry: registry,
+        //   repository: repository,
+        //   tag: "latest"
+        // ]
+        // // Adds AWS ECR Credentials to config
+        // withCredentials([[
+        //   $class: 'AmazonWebServicesCredentialsBinding', 
+        //   credentialsId: 'ecr', 
+        //   accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+        //   secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+        //   ]]) {
+        //     config.registryAccessKey = AWS_ACCESS_KEY_ID
+        //     config.registrySecret = AWS_SECRET_ACCESS_KEY
+        //   }
 
-          // scanImage(config)
-        }  
-      }
+        // scanImage(config)
+      }  
     }
-    stage('Deploy'){
-      sh 'echo "Deployed to Cluster."'
-    }
+  
+  stage('Deploy'){
+    sh 'echo "Deployed to Cluster."'
   }
 }
