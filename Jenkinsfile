@@ -29,7 +29,7 @@ node(podLabel) {
   stage('Scan image with DSSC'){
     container('docker') {
       withCredentials([
-        $class: 'AmazonWebServicesCredentialsBinding',
+        credentialsID: 'ecr',
         accessKeyVariable: 'AWS_ACCESS_KEY',
         secretKeyVariable: 'AWS_SECRET_KEY'
       ]){
