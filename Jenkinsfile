@@ -29,9 +29,11 @@ node(podLabel) {
   stage('Scan image with DSSC'){
     container('docker') {
       withCredentials([
-        credentialsId: 'sc-ecr',
-        usernameVariable: 'ECR_USER',
-        passwordVariable: 'ECR_PASS',
+          usernamePassword([
+          credentialsId: 'sc-ecr',
+          usernameVariable: 'ECR_USER',
+          passwordVariable: 'ECR_PASS',
+        ])
       ]){
           smartcheckScan([
               imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
