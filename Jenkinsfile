@@ -1,55 +1,68 @@
-def podLabel = "jenkins-jenkins-slave "
-def image = "jenkins/jnlp-slave"
-def registry = "robmaynard"
-def repository = "sc-test"
-def tag = "latest"
-def dockerImage = ""
-def registryCredential = 'dockerhub'
-
-
-node(podLabel) {
-  stage('Cloning Git Repo') {
-    git "https://github.com/robmaynardjr/SC-Test.git"
+pipeline {
+  environment {
+    registry = "robmaynard/sc-test-vuln"
+    registryCredential = 'dockerhub'
   }
-  stage('Build Container Image'){
-    container('docker') {
-      script {
-        dockerImage = docker.build((registry + "/" + repository + ":" + tag))
-      }
-    }
-  }
-  stage('Stage Container Image'){
-    container('docker') {
-      script {
-        docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-          dockerImage.push()
+
+ node('jenkins-jenkins-slave ') {
+    stages {
+        stage("Cloning Git Repo") {
+        steps {
+            git "https://github.com/robmaynardjr/SC-Test.git"
         }
-      }
+        }
+
+        stage("Building image") {
+        steps{
+            container('docker') {
+                script {
+                dockerImage = docker.build('robmaynard/sc-test:latest')
+                }
+            }
+        }
     }
-  }
-  stage('Scan image with DSSC'){
-    container('docker') {
-      withCredentials([
-        usernamePassword([
-            credentialsId: "dockerhub",
-            usernameVariable: "USER",
-            passwordVariable: "PASSWORD",
-        ])             
-    ]){            
-        smartcheckScan([
-            imageName: "registry.hub.docker.com/robmaynard/sc-test:latest",
-            smartcheckHost: "10.0.10.100",
-            insecureSkipTLSVerify: true,
-            smartcheckCredentialsId: "smart-check-jenkins-user",
-            imagePullAuth: new groovy.json.JsonBuilder([
-                username: USER,
-                password: PASSWORD,
-                ]).toString(),
-          ])
-      }
+
+        stage("Stage Image") {
+        steps{
+            container('docker') {
+                script {
+                docker.withRegistry('https://registry.hub.docker.com', registryCredential ) {
+                    dockerImage.push()
+                }
+            }
+            }
+        }
+        }
+
+        stage("Security Check") {
+            steps {
+                container('docker') {
+                    withCredentials([
+                        usernamePassword([
+                            credentialsId: "dockerhub",
+                            usernameVariable: "USER",
+                            passwordVariable: "PASSWORD",
+                        ])             
+                    ]){            
+                        smartcheckScan([
+                            imageName: "registry.hub.docker.com/robmaynard/sc-test:latest",
+                            smartcheckHost: "10.0.10.100",
+                            insecureSkipTLSVerify: true,
+                            smartcheckCredentialsId: "smart-check-jenkins-user",
+                            imagePullAuth: new groovy.json.JsonBuilder([
+                                username: USER,
+                                password: PASSWORD,
+                                ]).toString(),
+                            ])
+                        }
+                    }
+                }
+            }
+        stage ("Deploy to Cluster") {
+        steps{
+            echo "Function to be added at a later date."
+                }
+            }
+        }   
     }
-  }
-  stage('Deploy'){
-    sh 'echo "Deployed to Cluster."'
-  }
 }
