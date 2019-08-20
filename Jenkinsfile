@@ -3,8 +3,7 @@ pipeline {
     registry = "robmaynard/sc-test-vuln"
     registryCredential = 'dockerhub'
   }
-
- node('jenkins-jenkins-slave ') {
+    agent { label 'jenkins-jenkins-slave ' }
     stages {
         stage("Cloning Git Repo") {
         steps {
@@ -61,7 +60,7 @@ pipeline {
         stage ("Deploy to Cluster") {
         steps{
             echo "Function to be added at a later date."
-                }
+                
             }
         }   
     }
