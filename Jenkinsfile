@@ -200,13 +200,6 @@ def scanImage(Map config) {
     }
     stage('Smart Check Security Scan'){
       script{
-        withCredentials([
-            usernamePassword([
-            credentialsId: "ecr",
-            usernameVariable: 'AWS_ACCESS_KEY_ID',
-            passwordVariable: 'AWS_SECRET_ACCESS_KEY',
-          ])
-        ]){
         smartcheckScan([
             imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
             smartcheckHost: '10.0.10.100',
@@ -221,7 +214,29 @@ def scanImage(Map config) {
 
             ]).toString(),
           ])
-        }
+
+        // withCredentials([
+        //     usernamePassword([
+        //     credentialsId: "ecr",
+        //     usernameVariable: 'AWS_ACCESS_KEY_ID',
+        //     passwordVariable: 'AWS_SECRET_ACCESS_KEY',
+        //   ])
+        // ]){
+        // smartcheckScan([
+        //     imageName: '279773871986.dkr.ecr.us-east-2.amazonaws.com/sc-test:latest',
+        //     smartcheckHost: '10.0.10.100',
+        //     smartcheckCredentialsId: 'smart-check-jenkins-user',
+        //     imagePullAuth: new groovy.json.JsonBuilder([
+        //         region: 'us-east-2',
+        //         accessKeyId: 'AWS_ACCESS_KEY_ID',
+        //         secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
+        //         registry: '279773871986',
+        //         role: 'arn:aws:iam::279773871986:role/ecr-admin',
+        //         externalID: '1984',
+
+        //     ]).toString(),
+        //   ])
+        // }
 
 
           // Parameters for Smart Check scan function 
