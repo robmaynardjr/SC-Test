@@ -23,6 +23,7 @@ node(podLabel) {
         docker.withRegistry((registry + "/" + repository), registryCredential ) {
           dockerImage.push()
         }
+      }
     }
   }
   stage('Scan image with DSSC'){
@@ -46,30 +47,8 @@ node(podLabel) {
               ]).toString(),
           ])
       }
-  }
-
-
-        // Parameters for Smart Check scan function 
-        // def config = [
-        //   registry: registry,
-        //   repository: repository,
-        //   tag: "latest"
-        // ]
-        // // Adds AWS ECR Credentials to config
-        // withCredentials([[
-        //   $class: 'AmazonWebServicesCredentialsBinding', 
-        //   credentialsId: 'ecr', 
-        //   accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-        //   secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-        //   ]]) {
-        //     config.registryAccessKey = AWS_ACCESS_KEY_ID
-        //     config.registrySecret = AWS_SECRET_ACCESS_KEY
-        //   }
-
-        // scanImage(config)
-      }  
     }
-  
+  }
   stage('Deploy'){
     sh 'echo "Deployed to Cluster."'
   }
