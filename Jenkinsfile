@@ -30,7 +30,7 @@ pipeline {
                         // docker.withRegistry('', registryCredential ) {
                         //     dockerImage.push()
 
-                        sh "docker login -u ${USER} -p ${PASS} 
+                        sh "docker login -u ${USER} -p ${PASS} ${registry}"
                         def image = 'robmaynard/sc-test:latest'
                         image.push                        
                         }
