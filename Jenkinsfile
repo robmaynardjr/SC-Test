@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    registry = "robmaynard/sc-test-vuln"
+    registry = "registry.hub.docker.com"
     registryCredential = 'dockerhub'
   }
     agent { label 'jenkins-jenkins-slave ' }
@@ -25,12 +25,12 @@ pipeline {
         steps{
             container('docker') {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'USER', usernameVariable: 'PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
 
                         // docker.withRegistry('', registryCredential ) {
                         //     dockerImage.push()
 
-                        sh "docker login -u ${USER} -p ${PASS} ${registry}"
+                        sh "docker login -u ${USER} -p ${PASS} 
                         def image = 'robmaynard/sc-test:latest'
                         image.push                        
                         }
