@@ -6,7 +6,7 @@ pipeline {
     registryCredential = 'dockerhub'
     imgName = 'robmaynard/sc-test:latest'
     gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
-    imagePull = '{ ["username": ${USER}, "password": ${PASS}] }'
+    imagePull = '{ {"username": ${USER}, "password": ${PASS}} }'
   }
     agent { label 'jenkins-jenkins-slave ' }
     stages {
