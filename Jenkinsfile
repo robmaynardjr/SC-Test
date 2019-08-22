@@ -32,7 +32,7 @@ pipeline {
                         // docker.withRegistry('', registryCredential ) {
                         //     dockerImage.push()
                         echo "Logging into Dockerhub..."
-                        sh "docker login -u '${USER}' -p '${PASS}' '${registry}'"
+                        sh "docker login -u '${USER}' -p '${PASS}'"
                         echo "Pushing Image..."
                         sh "docker push ${imgName}"                       
                         }
