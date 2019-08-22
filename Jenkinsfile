@@ -25,8 +25,10 @@ pipeline {
         steps{
             container('docker') {
                 script {
-                docker.withRegistry('https://registry.hub.docker.com', registryCredential ) {
+                docker.withRegistry('', registryCredential ) {
                     dockerImage.push()
+
+                sh "docker login "
                 }
             }
             }
