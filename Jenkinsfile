@@ -62,7 +62,7 @@ pipeline {
                             // imagePullAuth: new groovy.json.JsonBuilder([[
                             //     "username":"USER",
                             //     "password":"PASSWORD",
-                            ]]).toString(),
+                            // ]]).toString(),
                         ])
                         }
                     }
