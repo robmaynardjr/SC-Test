@@ -1,4 +1,4 @@
-import groovy.json.JsonBuilder
+import groovy.json.*
 
 pipeline {
   environment {
@@ -6,7 +6,8 @@ pipeline {
     registryCredential = 'dockerhub'
     imgName = 'robmaynard/sc-test:latest'
     gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
-    imagePull = '{ {"username": ${USER}, "password": ${PASS}} }'
+    imagePull = '{ "username": ${USER}, "password": ${PASS} }'
+    IPA = new JsonBuilder(imagePull).toPrettyString()
   }
     agent { label 'jenkins-jenkins-slave ' }
     stages {
@@ -60,7 +61,7 @@ pipeline {
                             smartcheckHost: "10.0.10.100",
                             insecureSkipTLSVerify: true,
                             smartcheckCredentialsId: "smart-check-jenkins-user",
-                            imagePullAuth: imagePull
+                            imagePullAuth: IPA
                         ])
                         }
                     }
