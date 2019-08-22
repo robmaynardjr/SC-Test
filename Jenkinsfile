@@ -25,15 +25,20 @@ pipeline {
         steps{
             container('docker') {
                 script {
-                docker.withRegistry('', registryCredential ) {
-                    dockerImage.push()
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'USER', usernameVariable: 'PASS')]) {
 
-                sh "docker login "
+                        // docker.withRegistry('', registryCredential ) {
+                        //     dockerImage.push()
+
+                        sh "docker login -u ${USER} -p ${PASS} ${registry}"
+                        def image = 'robmaynard/sc-test:latest'
+                        image.push                        
+                        }
+                    }   
                 }
             }
-            }
         }
-        }
+        
 
         stage("Security Check") {
             steps {
