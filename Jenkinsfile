@@ -2,12 +2,14 @@ pipeline {
   environment {
     registry = "registry.hub.docker.com"
     registryCredential = 'dockerhub'
+    imgName = 'robmaynard/sc-test:latest'
+    gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
   }
     agent { label 'jenkins-jenkins-slave ' }
     stages {
         stage("Cloning Git Repo") {
         steps {
-            git "https://github.com/robmaynardjr/SC-Test.git"
+            git gitRepo
         }
         }
 
@@ -15,7 +17,7 @@ pipeline {
         steps{
             container('docker') {
                 script {
-                dockerImage = docker.build('robmaynard/sc-test:latest')
+                dockerImage = docker.build(imgName)
                 }
             }
         }
@@ -29,10 +31,10 @@ pipeline {
 
                         // docker.withRegistry('', registryCredential ) {
                         //     dockerImage.push()
-
+                        echo "Logging into Dockerhub..."
                         sh "docker login -u '${USER}' -p '${PASS}' '${registry}'"
-                        def image = 'robmaynard/sc-test:latest'
-                        image.push                        
+                        echo "Pushing Image..."
+                        sh "docker push ${imgName}"                       
                         }
                     }   
                 }
