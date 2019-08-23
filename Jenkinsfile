@@ -8,7 +8,7 @@ pipeline {
     imgPAuth = groovy.json.JsonBuilder([
          "username":"${USER}",
          "password":"${PASSWORD}"
-    ])
+    ]).toString()
   }
   
     agent { label 'jenkins-jenkins-slave ' }
