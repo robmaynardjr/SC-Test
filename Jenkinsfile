@@ -68,7 +68,7 @@ pipeline {
                             ])   
                         ]){
                             sh "docker login -u '${USER}' -p '${PASSWORD}'"
-                            def imgPAuth = new groovy.json.JsonBuilder([imgPAuthStr])
+                            def imgPAuth = new groovy.json.JsonBuilder([imgPAuthStr]).toString()
                             echo imgPAuth
                             sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth=${imgPAuth}"
                         }
