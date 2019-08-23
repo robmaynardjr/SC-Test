@@ -66,7 +66,7 @@ pipeline {
                         ])   
                     ]){
                         sh "docker login -u '${USER}' -p '${PASSWORD}'"
-                        sh "docker run deepsecurity/smart-check-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --img-pull-auth={'username': USER, 'password': PASSWORD}"
+                        sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --img-pull-auth={'username': USER, 'password': PASSWORD}"
                     }
                 }
             }
