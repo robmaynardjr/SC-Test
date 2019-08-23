@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage("Building image") {
             steps{
-                container('docker') {
+                container('jnlp') {
                     script {
                         dockerImage = docker.build(imgName)
                     }
@@ -22,7 +22,7 @@ pipeline {
 
         stage("Stage Image") {
             steps{
-                container('docker') {
+                container('jnlp') {
                     script {
                         withCredentials([
                             usernamePassword([
@@ -45,7 +45,7 @@ pipeline {
             }
         stage("Security Check") {
             steps {
-                container('docker') {
+                container('jnlp') {
                     script {
                         withCredentials([
                             usernamePassword([
