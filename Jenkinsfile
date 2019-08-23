@@ -20,7 +20,7 @@ pipeline {
             steps{
                 container('docker') {
                     script {
-                    dockerImage = docker.build(imgName)
+                        dockerImage = docker.build(imgName)
                     }
                 }
             }
@@ -33,8 +33,8 @@ pipeline {
                         withCredentials([
                             usernamePassword([
                                 credentialsId: 'dockerhub', 
-                                passwordVariable: 'DOCKERPASS', 
-                                usernameVariable: 'DOCKERUSER',
+                                passwordVariable: 'PASS', 
+                                usernameVariable: 'USER',
                                 ])
                             ]) {
 
@@ -75,7 +75,6 @@ pipeline {
         stage ("Deploy to Cluster") {
         steps{
             echo "Function to be added at a later date."
-                
             }
         }   
     }
