@@ -6,8 +6,8 @@ pipeline {
     gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
     smartCheckHost = "10.0.10.100"
     imgPAuth = new groovy.json.JsonBuilder([
-         "username":${USER},
-         "password":${PASSWORD}}
+         "username":"${USER}",
+         "password":"${PASSWORD}"
     ])
   }
   
