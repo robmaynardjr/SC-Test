@@ -79,18 +79,3 @@ pipeline {
         }   
     }
 }
-
-
-
-
-//     smartcheckScan([
-                    //         imageName: "robmaynard/sc-test:latest",
-                    //         smartcheckHost: "10.0.10.100",
-                    //         insecureSkipTLSVerify: true,
-                    //         smartcheckCredentialsId: "smart-check-jenkins-user",
-                    //         imagePullAuth: new groovy.json.JsonBuilder([
-                    //             username: USER,
-                    //             password: PASSWORD,
-                    //         ]).toString(),
-                    //     ])
-                    //     }
