@@ -67,7 +67,7 @@ pipeline {
                             ])   
                         ]){
                             sh "docker login -u '${USER}' -p '${PASSWORD}'"
-                            def imgPAuth = ' {"username":"${USER}","password":"${PASSWORD}"} '
+                            def imgPAuth = " {\"username\":\"${USER}\",\"password\":\"${PASSWORD}\"} "
                             
                             sh "docker run deepsecurity/smartcheck-scan-action --image-name registry.hub.docker.com/robmaynard/sc-test:latest --smartcheck-host=10.0.10.100 --smartcheck-user='$SCUSER' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth='${imgPAuth}'"
                         }
