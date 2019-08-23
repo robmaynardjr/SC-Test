@@ -62,8 +62,8 @@ pipeline {
                         ]),
                         usernamePassword([
                             credentialsId: "smart-check-jenkins-user",
-                            usernameVariable: "SC-USER",
-                            passwordVariable: "SC-PASSWORD",
+                            usernameVariable: "SCUSER",
+                            passwordVariable: "SCPASSWORD",
                         ])             
                     ]){
                         sh "docker run deepsecurity/smart-check-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SC-USER}' --smartcheck-password='${SC-PASSWORD}' --insecure-skip-tls-verify --img-pull-auth={'username': USER, 'password': PASSWORD}"
