@@ -8,8 +8,6 @@ pipeline {
     imgPAuthStr = '"username":"${USER}","password":"${PASSWORD}"'
   }
   
-  def imgPAuth = new groovy.json.JsonBuilder([imgPAuthStr])
-  
     agent { label 'jenkins-jenkins-slave ' }
 
     stages {
@@ -56,21 +54,24 @@ pipeline {
         stage("Security Check") {
             steps {
                 container('docker') {
-                    withCredentials([
-                        usernamePassword([
-                            credentialsId: "dockerhub",
-                            usernameVariable: "USER",
-                            passwordVariable: "PASSWORD",
-                        ]),
-                        usernamePassword([
-                            credentialsId: "smart-check-jenkins-user",
-                            usernameVariable: "SCUSER",
-                            passwordVariable: "SCPASSWORD",
-                        ])   
-                    ]){
-                        sh "docker login -u '${USER}' -p '${PASSWORD}'"
-                        echo imgPAuth
-                        sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth=${imgPAuth}"
+                    script {
+                        withCredentials([
+                            usernamePassword([
+                                credentialsId: "dockerhub",
+                                usernameVariable: "USER",
+                                passwordVariable: "PASSWORD",
+                            ]),
+                            usernamePassword([
+                                credentialsId: "smart-check-jenkins-user",
+                                usernameVariable: "SCUSER",
+                                passwordVariable: "SCPASSWORD",
+                            ])   
+                        ]){
+                            sh "docker login -u '${USER}' -p '${PASSWORD}'"
+                            def imgPAuth = new groovy.json.JsonBuilder([imgPAuthStr])
+                            echo imgPAuth
+                            sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth=${imgPAuth}"
+                        }
                     }
                 }
             }
