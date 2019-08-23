@@ -10,12 +10,6 @@ pipeline {
     agent { label 'jenkins-jenkins-slave ' }
 
     stages {
-        stage("Cloning Git Repo") {
-            steps {
-                git gitRepo
-            }
-        }
-
         stage("Building image") {
             steps{
                 container('docker') {
