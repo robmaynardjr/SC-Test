@@ -5,7 +5,7 @@ pipeline {
     imgName = 'robmaynard/sc-test:latest'
     gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
     smartCheckHost = "10.0.10.100"
-    imgPAuthStr = '"username":"${USER}","password":"${PASSWORD}"'
+
   }
   
     agent { label 'jenkins-jenkins-slave ' }
@@ -68,7 +68,10 @@ pipeline {
                             ])   
                         ]){
                             sh "docker login -u '${USER}' -p '${PASSWORD}'"
-                            def imgPAuth = new groovy.json.JsonBuilder([imgPAuthStr]).toString()
+                            def imgPAuth = new groovy.json.JsonBuilder([
+                                "username":"${USER}",
+                                "password":"${PASSWORD}"
+                            ]).toString()
                             echo imgPAuth
                             sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth=${imgPAuth}"
                         }
