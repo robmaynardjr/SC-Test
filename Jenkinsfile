@@ -59,7 +59,7 @@ pipeline {
                             credentialsId: "dockerhub",
                             usernameVariable: "USER",
                             passwordVariable: "PASSWORD",
-                        ])
+                        ]),
                         usernamePassword([
                             credentialsId: "smart-check-jenkins-user",
                             usernameVariable: "SC-USER",
