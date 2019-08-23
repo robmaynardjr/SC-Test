@@ -73,7 +73,7 @@ pipeline {
                                 "password":"${PASSWORD}"
                             ]).toString()
                             echo imgPAuth
-                            sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth='{"username":"${USER}","password":"${PASSWORD}"}'"
+                            sh "docker run deepsecurity/smartcheck-scan-action --image-name ${imgName} --smartcheck-host='${smartCheckHost}' --smartcheck-user='${SCUSER}' --smartcheck-password='${SCPASSWORD}' --insecure-skip-tls-verify --image-pull-auth={"username":"${USER}","password":"${PASSWORD}"}"
                         }
                     }
                 }
