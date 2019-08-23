@@ -5,7 +5,7 @@ pipeline {
     imgName = 'robmaynard/sc-test:latest'
     gitRepo = "https://github.com/robmaynardjr/SC-Test.git"
     smartCheckHost = "10.0.10.100"
-    imgPAuth = groovy.json.JsonBuilder(["username":"${USER}","password":"${PASSWORD}"]).toString
+    imgPAuth = '"username":"${USER}","password":"${PASSWORD}"'
   }
   
     agent { label 'jenkins-jenkins-slave ' }
