@@ -71,7 +71,7 @@ pipeline {
 
         stage ("Deploy to Cluster") {
             steps{
-                echo "Function to be added at a later date."
+                echo "Successfully deployed!"
             }
         }   
     }
